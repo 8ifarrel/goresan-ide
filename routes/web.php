@@ -23,7 +23,7 @@ Route::as('guest.')->group(function () {
       ->name('terkini.index');
     Route::get('/populer', [BlogPopulerGuestController::class, 'index'])
       ->name('populer.index');
-    Route::get('/ini-judul', [BlogGuestController::class, 'show'])
+    Route::get('/{slug}', [BlogGuestController::class, 'show'])
       ->name('show');
   });
 });

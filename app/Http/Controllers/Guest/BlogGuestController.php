@@ -3,20 +3,25 @@
 namespace App\Http\Controllers\Guest;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Blog;
 
 class BlogGuestController extends Controller
 {
-    public function show()
+    public function show($slug)
     {
-        $page_title = 'Blog';
-        $page_description = 'Some description for the page';
-        $page_meta_description = 'Some meta description for the page';
+        $blog = Blog::with(['user', 'images', 'categories.master'])
+            ->where('slug', $slug)
+            ->firstOrFail();
+
+        $page_title = $blog->title;
+        $page_description = $blog->summary;
+        $page_meta_description = $blog->summary;
 
         return view('guest.pages.blog.show', [
             'page_title' => $page_title,
             'page_description' => $page_description,
             'page_meta_description' => $page_meta_description,
+            'blog' => $blog,
         ]);
     }
 }

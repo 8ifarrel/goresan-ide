@@ -3,69 +3,68 @@
 @section('document.head')
 @endsection
 
-@section('document.body')
-  <div class="bg-base-200">
-    <div class="max-w-6xl mx-auto px-4 py-8">
-      {{-- Breadcrumb --}}
-      <div class="text-sm breadcrumbs mb-6">
-        <ul>
-          <li><a href="{{ route('guest.beranda.index') }}">Beranda</a></li>
-          <li><a href="{{ route('guest.blog.terkini.index') }}">Blog Terkini</a></li>
-          <li class="text-base-content/60">Masa Depan Kecerdasan Buatan dalam Masyarakat Modern</li>
-        </ul>
-      </div>
+@section(section: 'document.body')
+  <div class="max-w-6xl mx-auto py-12">
+    {{-- Breadcrumb --}}
+    <div class="text-sm breadcrumbs mb-6">
+      <ul>
+        <li><a href="{{ route('guest.beranda.index') }}">Beranda</a></li>
+        <li><a href="{{ route('guest.blog.terkini.index') }}">Blog Terkini</a></li>
+        <li class="text-base-content/60">{{ $blog->title }}</li>
+      </ul>
+    </div>
 
-      <div class="grid lg:grid-cols-3 gap-8">
-        {{-- Main Content --}}
-        <div class="lg:col-span-2">
-          {{-- Article Header --}}
-          <div class="card bg-base-100 mb-8">
-            <figure class="relative">
-              <img src="https://picsum.photos/1200/600" alt="Blog Cover" class="w-full max-h-[500px] object-cover card" />
-            </figure>
-            <div class="card-body">
-              <div class="flex-wrap flex gap-2 text-sm flex-col">
-                <div>
-                  <span class="badge badge-primary">Teknologi</span>
-                  <span class="badge badge-primary">Budaya</span>
-                </div>
-                <div class="flex gap-2 text-sm text-base-content/60 w-fit flex-row flex-wrap">
-                  <span>2 hari lalu</span>
-                  <span>•</span>
-                  <span>5 menit baca</span>
-                  <span>•</span>
-                  <span>3 ribu pembaca</span>
-                  {{-- <span>•</span>
-                  <span>Diperbarui 1 hari lalu</span> --}}
-                </div>
+    <div class="grid lg:grid-cols-3 gap-8">
+      {{-- Main Content --}}
+      <div class="lg:col-span-2">
+        {{-- Article Header --}}
+        <div class="mb-8">
+          <figure class="relative">
+            <img src="{{ asset('storage/' . ($blog->primaryImage->image ?? '')) }}" alt="Blog Cover"
+              class="w-full max-h-[500px] object-cover card" />
+          </figure>
+          <div class="p-6 space-y-4">
+            <div class="flex-wrap flex gap-4 text-sm flex-col">
+              <div>
+                @foreach ($blog->categories as $cat)
+                  <span class="badge badge-primary">{{ $cat->master->name }}</span>
+                @endforeach
               </div>
+              <div class="flex gap-2 text-sm text-base-content/60 w-fit flex-row flex-wrap">
+                <span>{{ $blog->created_at->diffForHumans() }}</span>
+                <span>•</span>
+                <span>{{ $blog->read_duration }} menit baca</span>
+                <span>•</span>
+                <span>{{ number_format($blog->view_count, 0, ',', '.') }} pembaca</span>
+              </div>
+            </div>
 
-              <h1 class="text-4xl font-bold">Masa Depan Kecerdasan Buatan dalam Masyarakat Modern</h1>
 
-              {{-- Article Meta --}}
-              <div class="flex items-center justify-between mb-6 mt-2">
-                <div class="flex items-center gap-4">
-                  <div class="flex items-center gap-2">
-                    <div class="avatar">
-                      <div class="w-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                        <img src="https://i.pravatar.cc/150?img=1" alt="Author" />
-                      </div>
-                    </div>
-                    <div>
-                      <p class="font-medium">Farrel Sirah</p>
-                      <p class="text-sm text-base-content/60">Penulis</p>
+            <h1 class="text-4xl font-bold">{{ $blog->title }}</h1>
+
+            {{-- Article Meta --}}
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <div class="flex items-center gap-2">
+                  <div class="avatar">
+                    <div class="w-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                      <img src="https://i.pravatar.cc/150?u={{ $blog->user->email }}" alt="Author" />
                     </div>
                   </div>
-                </div>
-                <div class="flex gap-2">
-                  {{-- <button class="btn btn-ghost btn-sm" title="Simpan"><i class="fas fa-bookmark"></i></button> --}}
-                  <button class="btn btn-ghost btn-sm" title="Bagikan"><i class="fas fa-share-alt"></i></button>
+                  <div>
+                    <p class="font-medium">{{ $blog->user->name }}</p>
+                    <p class="text-sm text-base-content/60">Penulis</p>
+                  </div>
                 </div>
               </div>
+              <div class="flex gap-2">
+                <button class="btn btn-ghost btn-sm" title="Bagikan"><i class="fas fa-share-alt"></i></button>
+              </div>
+            </div>
 
-              {{-- Article Content --}}
-              <div
-                class="prose prose-lg max-w-none
+            {{-- Article Content --}}
+            <div
+              class="prose prose-lg max-w-none
                          prose-headings:text-base-content 
                          prose-p:text-base-content/70
                          prose-strong:text-base-content
@@ -75,83 +74,61 @@
                          prose-code:text-primary
                          prose-img:rounded-xl
                          prose-a:text-primary">
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam voluptatibus, voluptatum, quae, quos
-                  voluptates quia voluptas quidem voluptate doloribus quibusdam dolorum. Quisquam voluptatibus,
-                  voluptatum, quae, quos voluptates quia voluptas quidem voluptate doloribus quibusdam dolorum.</p>
+              {!! nl2br(e($blog->body)) !!}
+            </div>
+          </div>
+        </div>
+      </div>
 
-                <h2>Subtitle Pertama</h2>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam voluptatibus, voluptatum, quae, quos
-                  voluptates quia voluptas quidem voluptate doloribus quibusdam dolorum.</p>
-
-                <h2>Subtitle Kedua</h2>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam voluptatibus, voluptatum, quae, quos
-                  voluptates quia voluptas quidem voluptate doloribus quibusdam dolorum.</p>
-
-                <blockquote>
-                  "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam voluptatibus, voluptatum, quae, quos
-                  voluptates quia voluptas quidem voluptate doloribus quibusdam dolorum."
-                </blockquote>
-
-                <h2>Kesimpulan</h2>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam voluptatibus, voluptatum, quae, quos
-                  voluptates quia voluptas quidem voluptate doloribus quibusdam dolorum.</p>
+      {{-- Sidebar --}}
+      <div class="space-y-8">
+        {{-- Author Card --}}
+        <div class="card bg-base-100">
+          <div class="card-body p-0 gap-4">
+            <div class="flex items-center gap-4">
+              <div class="avatar">
+                <div class="w-16 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                  <img src="https://i.pravatar.cc/150?u={{ $blog->user->email }}" alt="Author" />
+                </div>
               </div>
+              <div>
+                <h3 class="font-bold text-lg">{{ $blog->user->name }}</h3>
+                <p class="text-sm text-base-content/60">{{ $blog->user->blogs()->count() }} Blog</p>
+              </div>
+            </div>
+            <p class="text-base-content/70">Penulis blog aktif.</p>
+            <button class="btn btn-primary w-full">Ikuti</button>
+          </div>
+        </div>
+
+        <div class="card bg-base-100">
+          <div class="card-body p-0">
+            <h3 class="font-bold text-lg mb-4">Blog Terkait</h3>
+            <div class="space-y-4">
+              @for ($i = 1; $i <= 3; $i++)
+                <div class="flex gap-4">
+                  <img src="https://picsum.photos/100/100?random={{ $i }}" alt="Related Post"
+                    class="w-24 h-24 rounded-lg object-cover" />
+                  <div>
+                    <h4 class="font-medium hover:text-primary cursor-pointer">Blog Terkait Tentang AI
+                      #{{ $i }}</h4>
+                    <p class="text-sm text-base-content/60">{{ rand(2, 5) }} hari lalu • {{ rand(3, 8) }}
+                      menit baca</p>
+                  </div>
+                </div>
+              @endfor
             </div>
           </div>
         </div>
 
-        {{-- Sidebar --}}
-        <div class="space-y-8">
-          {{-- Author Card --}}
-          <div class="card bg-base-100">
-            <div class="card-body">
-              <div class="flex items-center gap-4 mb-4">
-                <div class="avatar">
-                  <div class="w-16 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                    <img src="https://i.pravatar.cc/150?img=1" alt="Author" />
-                  </div>
-                </div>
-                <div>
-                  <h3 class="font-bold text-lg">Farrel Sirah</h3>
-                  <p class="text-sm text-base-content/60">120 Blog • 1.2K Pengikut</p>
-                </div>
-              </div>
-              <p class="text-base-content/70 mb-4">Penulis teknologi yang fokus pada AI dan perkembangan teknologi modern.
-              </p>
-              <button class="btn btn-primary w-full">Ikuti</button>
-            </div>
-          </div>
-
-          {{-- Related Posts --}}
-          <div class="card bg-base-100">
-            <div class="card-body">
-              <h3 class="font-bold text-lg mb-4">Blog Terkait</h3>
-              <div class="space-y-4">
-                @for ($i = 1; $i <= 3; $i++)
-                  <div class="flex gap-4">
-                    <img src="https://picsum.photos/100/100?random={{ $i }}" alt="Related Post"
-                      class="w-24 h-24 rounded-lg object-cover" />
-                    <div>
-                      <h4 class="font-medium hover:text-primary cursor-pointer">Blog Terkait Tentang AI
-                        #{{ $i }}</h4>
-                      <p class="text-sm text-base-content/60">{{ rand(2, 5) }} hari lalu • {{ rand(3, 8) }}
-                        menit baca</p>
-                    </div>
-                  </div>
-                @endfor
-              </div>
-            </div>
-          </div>
-
-          {{-- Popular Categories --}}
-          <div class="card bg-base-100">
-            <div class="card-body">
-              <h3 class="font-bold text-lg mb-4">Kategori Populer</h3>
-              <div class="flex flex-wrap gap-2">
-                @foreach (['Teknologi', 'Sains', 'Bisnis', 'Lifestyle', 'Budaya', 'Kesehatan'] as $category)
-                  <span class="badge badge-outline hover:badge-primary cursor-pointer">{{ $category }}</span>
-                @endforeach
-              </div>
+        {{-- Popular Categories --}}
+        <div class="card bg-base-100">
+          <div class="card-body p-0">
+            <h3 class="font-bold text-lg mb-4">Kategori Populer</h3>
+            <div class="flex flex-wrap gap-2">
+              @foreach (['Teknologi', 'Sains', 'Bisnis', 'Lifestyle', 'Budaya', 'Kesehatan'] as $category)
+                <span class="badge badge-outline hover:badge-primary cursor-pointer">{{ $category }}</span>
+              @endforeach
             </div>
           </div>
         </div>
