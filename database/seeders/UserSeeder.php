@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-use Faker\Factory as Faker;
+use Illuminate\Support\Str;
 
 class UserSeeder extends Seeder
 {
@@ -14,17 +14,25 @@ class UserSeeder extends Seeder
 
         // User utama
         User::factory()->create([
-            'name' => 'Farrel Sirah',
+            'fullname' => 'Farrel Sirah',
+            'username' => '8ifarrel',
             'email' => 'farrelsirah@example.com',
             'password' => Hash::make('password'),
+            'is_superadmin' => true,
+            'about' => fake()->sentence(10),
         ]);
 
         // 9 user lain dengan identitas unik
         for ($i = 1; $i <= 9; $i++) {
+            $fake_name = fake()->name;
             User::factory()->create([
-                'name' => fake()->name,
+                'fullname' => $fake_name,
+                'username' => Str::slug($fake_name),
                 'email' => fake()->unique()->safeEmail,
                 'password' => Hash::make('password'),
+                'is_superadmin' => false,
+                'about' => fake()->sentence(rand(7, 10)),
+
             ]);
         }
     }
