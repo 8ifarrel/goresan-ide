@@ -41,10 +41,14 @@
               <div class="flex items-center gap-2">
                 <div class="avatar">
                   <div class="w-10 rounded-full">
-                    <img src="https://i.pravatar.cc/150?u={{ $populer[0]->user->email }}" alt="Author">
+                    @if($populer[0]->user->profile_picture)
+                      <img src="{{ asset('storage/' . $populer[0]->user->profile_picture) }}" alt="Author">
+                    @else
+                      <img src="https://i.pravatar.cc/150?u={{ $populer[0]->user->email }}" alt="Author">
+                    @endif
                   </div>
                 </div>
-                <span class="font-medium">{{ $populer[0]->user->name }}</span>
+                <span class="font-medium">{{ $populer[0]->user->fullname }}</span>
               </div>
             </div>
           </div>
@@ -89,10 +93,14 @@
                 <div class="flex items-center gap-2">
                   <div class="avatar">
                     <div class="w-8 rounded-full">
-                      <img src="https://i.pravatar.cc/150?u={{ $blog->user->email }}" alt="Author">
+                      @if($blog->user->profile_picture)
+                        <img src="{{ asset('storage/' . $blog->user->profile_picture) }}" alt="Author">
+                      @else
+                        <img src="https://i.pravatar.cc/150?u={{ $blog->user->email }}" alt="Author">
+                      @endif
                     </div>
                   </div>
-                  <span class="text-sm">{{ $blog->user->name }}</span>
+                  <span class="text-sm">{{ $blog->user->fullname }}</span>
                 </div>
               </div>
             </div>
@@ -142,10 +150,14 @@
                 <div class="flex items-center gap-2">
                   <div class="avatar">
                     <div class="w-8 rounded-full">
-                      <img src="https://i.pravatar.cc/150?u={{ $blog->user->email }}" alt="Author">
+                      @if($blog->user->profile_picture)
+                        <img src="{{ asset('storage/' . $blog->user->profile_picture) }}" alt="Author">
+                      @else
+                        <img src="https://i.pravatar.cc/150?u={{ $blog->user->email }}" alt="Author">
+                      @endif
                     </div>
                   </div>
-                  <span class="text-sm">{{ $blog->user->name }}</span>
+                  <span class="text-sm">{{ $blog->user->fullname }}</span>
                 </div>
               </div>
             </div>

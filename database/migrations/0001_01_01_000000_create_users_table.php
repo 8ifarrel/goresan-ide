@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('fullname');
             $table->string('username')->unique();
-            $table->boolean('is_superadmin')->default('0');
+            $table->boolean('is_admin')->default('0');
             $table->string('email')->unique();
             $table->string('profile_picture')->nullable();
             $table->string('about', 120)->nullable();

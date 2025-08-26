@@ -3,7 +3,7 @@
 @section('document.head')
 @endsection
 
-@section(section: 'document.body')
+@section('document.body')
   <div class="max-w-6xl mx-auto py-12">
     {{-- Breadcrumb --}}
     <div class="text-sm breadcrumbs mb-6">
@@ -48,11 +48,15 @@
                 <div class="flex items-center gap-2">
                   <div class="avatar">
                     <div class="w-12 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                      <img src="https://i.pravatar.cc/150?u={{ $blog->user->email }}" alt="Author" />
+                      @if($blog->user->profile_picture)
+                        <img src="{{ asset('storage/' . $blog->user->profile_picture) }}" alt="Author" />
+                      @else
+                        <img src="https://i.pravatar.cc/150?u={{ $blog->user->email }}" alt="Author" />
+                      @endif
                     </div>
                   </div>
                   <div>
-                    <p class="font-medium">{{ $blog->user->name }}</p>
+                    <p class="font-medium">{{ $blog->user->fullname }}</p>
                     <p class="text-sm text-base-content/60">Penulis</p>
                   </div>
                 </div>
@@ -88,15 +92,19 @@
             <div class="flex items-center gap-4">
               <div class="avatar">
                 <div class="w-16 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                  <img src="https://i.pravatar.cc/150?u={{ $blog->user->email }}" alt="Author" />
+                  @if($blog->user->profile_picture)
+                    <img src="{{ asset('storage/' . $blog->user->profile_picture) }}" alt="Author" />
+                  @else
+                    <img src="https://i.pravatar.cc/150?u={{ $blog->user->email }}" alt="Author" />
+                  @endif
                 </div>
               </div>
               <div>
-                <h3 class="font-bold text-lg">{{ $blog->user->name }}</h3>
+                <h3 class="font-bold text-lg">{{ $blog->user->fullname }}</h3>
                 <p class="text-sm text-base-content/60">{{ $blog->user->blogs()->count() }} Blog</p>
               </div>
             </div>
-            <p class="text-base-content/70">Penulis blog aktif.</p>
+            <p class="text-base-content/70">{{ $blog->user->about ?? 'Penulis blog aktif.' }}</p>
             <button class="btn btn-primary w-full">Ikuti</button>
           </div>
         </div>
