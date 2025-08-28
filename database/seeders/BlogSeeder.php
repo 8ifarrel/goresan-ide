@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use App\Models\User;
+use Illuminate\Support\Arr;
 use Exception;
 
 class BlogSeeder extends Seeder
@@ -21,7 +22,7 @@ class BlogSeeder extends Seeder
     for ($i = 0; $i < 30; $i++) {
       $judul = fake()->sentence(rand(4, 8));
       $slug = Str::slug($judul);
-      $userId = fake()->randomElement($userIds);
+      $userId = Arr::random($userIds);
 
       $blogId = DB::table('blogs')->insertGetId([
         'user_id' => $userId,
@@ -38,7 +39,7 @@ class BlogSeeder extends Seeder
       // ==== PRIMARY IMAGE ====
       try {
         $primaryUrl = "https://picsum.photos/seed/{$slug}-primary/1200/600";
-        $response = Http::withOptions(['verify' => false, 'timeout' => 10])->get($primaryUrl);
+        $response = Http::withOptions(['verify' => false, 'timeout' => 30])->get($primaryUrl);
 
         if ($response->successful()) {
           $primaryContents = $response->body();
@@ -54,6 +55,8 @@ class BlogSeeder extends Seeder
             'updated_at' => now(),
           ]);
         }
+        // Tambahkan delay setelah request ke picsum
+        usleep(300000); // 0.3 detik
       } catch (Exception $e) {
         // fallback kalau gagal download
         logger()->warning("Gagal download primary image untuk slug {$slug}: " . $e->getMessage());
@@ -64,7 +67,7 @@ class BlogSeeder extends Seeder
       for ($j = 1; $j <= $jumlahNonPrimary; $j++) {
         try {
           $nonPrimaryUrl = "https://picsum.photos/seed/{$slug}-{$j}/800/600";
-          $response = Http::withOptions(['verify' => false, 'timeout' => 10])->get($nonPrimaryUrl);
+          $response = Http::withOptions(['verify' => false, 'timeout' => 30])->get($nonPrimaryUrl);
 
           if ($response->successful()) {
             $nonPrimaryContents = $response->body();
@@ -80,11 +83,11 @@ class BlogSeeder extends Seeder
               'updated_at' => now(),
             ]);
           }
+          // Tambahkan delay setelah request ke picsum
+          usleep(300000); // 0.3 detik
         } catch (Exception $e) {
           logger()->warning("Gagal download non-primary image untuk slug {$slug}: " . $e->getMessage());
         }
-
-        usleep(200000);
       }
 
       // ==== KATEGORI ====

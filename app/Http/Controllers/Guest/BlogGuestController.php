@@ -13,6 +13,8 @@ class BlogGuestController extends Controller
             ->where('slug', $slug)
             ->firstOrFail();
 
+        $blog->increment('view_count');
+
         $page_title = $blog->title;
         $page_description = $blog->summary;
         $page_meta_description = $blog->summary;

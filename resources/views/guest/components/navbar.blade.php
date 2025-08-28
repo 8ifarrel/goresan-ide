@@ -41,6 +41,35 @@
     </ul>
   </div>
   <div class="navbar-end">
-    <a class="btn btn-primary"><i class="fa-solid fa-circle-user"></i>Masuk</a>
+    @auth
+      <div class="dropdown dropdown-end">
+        <div tabindex="0" role="button" class="btn btn-ghost flex items-center gap-2">
+          <div class="avatar">
+            <div class="w-8 rounded-full">
+              @if(auth()->user()->profile_picture)
+                <img src="{{ asset('storage/' . auth()->user()->profile_picture) }}" alt="Profile">
+              @else
+                <img src="https://i.pravatar.cc/150?u={{ auth()->user()->email }}" alt="Profile">
+              @endif
+            </div>
+          </div>
+          <span class="hidden md:inline">{{ auth()->user()->fullname }}</span>
+          <i class="fa fa-chevron-down text-xs"></i>
+        </div>
+        <ul tabindex="0" class="dropdown-content menu menu-sm bg-base-100 shadow mt-3 w-44 p-2 z-10">
+          <li><a href="{{ route('guest.blog.kelola.create') }}">Buat Blog</a></li>
+          <li><a href="{{ route('guest.blog.kelola.index') }}">Blog Saya</a></li>
+          <li><a href="{{ route('guest.profil.edit') }}">Profil</a></li>
+          <li>
+            <form method="POST" action="{{ route('guest.logout') }}">
+              @csrf
+              <button type="submit" class="w-full text-left">Keluar</button>
+            </form>
+          </li>
+        </ul>
+      </div>
+    @else
+      <a class="btn btn-primary" href="{{ route('guest.login') }}"><i class="fa-solid fa-circle-user"></i>Masuk</a>
+    @endauth
   </div>
 </div>

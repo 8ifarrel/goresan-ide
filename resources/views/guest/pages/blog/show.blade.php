@@ -39,7 +39,6 @@
               </div>
             </div>
 
-
             <h1 class="text-4xl font-bold">{{ $blog->title }}</h1>
 
             {{-- Article Meta --}}
@@ -78,7 +77,7 @@
                          prose-code:text-primary
                          prose-img:rounded-xl
                          prose-a:text-primary">
-              {!! nl2br(e($blog->body)) !!}
+              {!! $blog->body !!}
             </div>
           </div>
         </div>
@@ -105,26 +104,39 @@
               </div>
             </div>
             <p class="text-base-content/70">{{ $blog->user->about ?? 'Penulis blog aktif.' }}</p>
-            <button class="btn btn-primary w-full">Ikuti</button>
+            {{-- <button class="btn btn-primary w-full">Ikuti</button> --}}
           </div>
         </div>
 
+        {{-- Blog Terkait --}}
         <div class="card bg-base-100">
           <div class="card-body p-0">
             <h3 class="font-bold text-lg mb-4">Blog Terkait</h3>
             <div class="space-y-4">
-              @for ($i = 1; $i <= 3; $i++)
+              @php
+                $related = \App\Models\Blog::with(['primaryImage'])
+                  ->whereHas('categories', function($q) use ($blog) {
+                    $q->whereIn('blog_category_master_id', $blog->categories->pluck('blog_category_master_id'));
+                  })
+                  ->where('id', '!=', $blog->id)
+                  ->latest()
+                  ->take(3)
+                  ->get();
+              @endphp
+              @forelse($related as $rel)
                 <div class="flex gap-4">
-                  <img src="https://picsum.photos/100/100?random={{ $i }}" alt="Related Post"
+                  <img src="{{ asset('storage/' . ($rel->primaryImage->image ?? '')) }}" alt="Related Post"
                     class="w-24 h-24 rounded-lg object-cover" />
                   <div>
-                    <h4 class="font-medium hover:text-primary cursor-pointer">Blog Terkait Tentang AI
-                      #{{ $i }}</h4>
-                    <p class="text-sm text-base-content/60">{{ rand(2, 5) }} hari lalu • {{ rand(3, 8) }}
-                      menit baca</p>
+                    <h4 class="font-medium hover:text-primary cursor-pointer">
+                      <a href="{{ route('guest.blog.show', $rel->slug) }}">{{ $rel->title }}</a>
+                    </h4>
+                    <p class="text-sm text-base-content/60">{{ $rel->created_at->diffForHumans() }} • {{ $rel->read_duration }} menit baca</p>
                   </div>
                 </div>
-              @endfor
+              @empty
+                <div class="text-base-content/60 text-sm">Tidak ada blog terkait.</div>
+              @endforelse
             </div>
           </div>
         </div>
@@ -134,8 +146,13 @@
           <div class="card-body p-0">
             <h3 class="font-bold text-lg mb-4">Kategori Populer</h3>
             <div class="flex flex-wrap gap-2">
-              @foreach (['Teknologi', 'Sains', 'Bisnis', 'Lifestyle', 'Budaya', 'Kesehatan'] as $category)
-                <span class="badge badge-outline hover:badge-primary cursor-pointer">{{ $category }}</span>
+              @php
+                $popularCategories = \App\Models\BlogCategoryMaster::withCount(['categories as total' => function($q) {
+                  $q->join('blogs', 'blog_categories.blog_id', '=', 'blogs.id');
+                }])->orderByDesc('total')->take(6)->get();
+              @endphp
+              @foreach ($popularCategories as $category)
+                <span class="badge badge-outline hover:badge-primary cursor-pointer">{{ $category->name }}</span>
               @endforeach
             </div>
           </div>
