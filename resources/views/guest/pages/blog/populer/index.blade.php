@@ -166,27 +166,79 @@
         </div>
       @endif
 
-      {{-- Regular Popular Posts Grid --}}
+      {{-- Filter Bar & Regular Popular Posts Grid --}}
       <div class="space-y-8">
-        <div class="flex items-center gap-4 overflow-x-auto">
-          <a href="{{ route('guest.blog.populer.index', ['filter' => 'all']) }}"
-            class="btn {{ ($filter ?? 'month') === 'all' ? 'btn-primary' : 'btn-ghost' }}">
-            Sepanjang Waktu
-          </a>
-          <a href="{{ route('guest.blog.populer.index', ['filter' => 'week']) }}"
-            class="btn {{ ($filter ?? 'month') === 'week' ? 'btn-primary' : 'btn-ghost' }}">
-            Minggu Ini
-          </a>
-          <a href="{{ route('guest.blog.populer.index', ['filter' => 'month']) }}"
-            class="btn {{ ($filter ?? 'month') === 'month' ? 'btn-primary' : 'btn-ghost' }}">
-            Bulan Ini
-          </a>
-          <a href="{{ route('guest.blog.populer.index', ['filter' => 'year']) }}"
-            class="btn {{ ($filter ?? 'month') === 'year' ? 'btn-primary' : 'btn-ghost' }}">
-            Tahun Ini
-          </a>
-        </div>
+        {{-- Filter Bar --}}
+        <form method="GET" action="{{ route('guest.blog.populer.index') }}" class="flex flex-col md:flex-row gap-4"
+          id="filterPopulerForm">
+          <div class="dropdown dropdown-start">
+            <label tabindex="0" class="btn btn-outline btn-sm flex items-center gap-2">
+              <i class="fa fa-filter"></i>
+              <span>Filter Kategori</span>
+              <i class="fa fa-chevron-down text-xs"></i>
+            </label>
+            <div tabindex="0"
+              class="dropdown-content z-[1] bg-base-100 rounded-box shadow p-4 mt-2 text-nowrap">
+              <div class="flex flex-wrap gap-2 items-center">
+                <label class="cursor-pointer flex items-center gap-2 w-full">
+                  <input type="radio" id="category-all" name="category" value="" class="checkbox"
+                    {{ empty(request('category')) ? 'checked' : '' }}>
+                  <span class="label-text">Semua</span>
+                </label>
+                @foreach ($categories as $cat)
+                  <label class="cursor-pointer flex items-center gap-2 w-full">
+                    <input type="checkbox" name="category[]" value="{{ $cat->name }}" class="checkbox category-item"
+                      @if (is_array(request()->category ?? null) && in_array($cat->name, request()->category ?? [])) checked @endif>
+                    <span class="label-text">{{ $cat->name }}</span>
+                  </label>
+                @endforeach
+              </div>
+            </div>
+          </div>
+          <div class="dropdown dropdown-start">
+            <label tabindex="0" class="btn btn-outline btn-sm flex items-center gap-2">
+              <i class="fa fa-calendar"></i>
+              <span>
+                @if(($filter ?? 'month') === 'all')
+                  Sepanjang Waktu
+                @elseif(($filter ?? 'month') === 'week')
+                  Minggu Ini
+                @elseif(($filter ?? 'month') === 'year')
+                  Tahun Ini
+                @else
+                  Bulan Ini
+                @endif
+              </span>
+              <i class="fa fa-chevron-down text-xs"></i>
+            </label>
+            <div tabindex="0" class="dropdown-content z-[1] bg-base-100 rounded-box shadow p-2 mt-2 text-nowrap w-full md:w-auto">
+              <div class="flex flex-col gap-1">
+                <label class="cursor-pointer flex items-center gap-2 w-full px-2 py-1">
+                  <input type="radio" name="filter" value="all" class="radio"
+                    {{ (isset($filter) && $filter === 'all') ? 'checked' : '' }} onchange="this.form.submit()">
+                  <span class="label-text">Sepanjang Waktu</span>
+                </label>
+                <label class="cursor-pointer flex items-center gap-2 w-full px-2 py-1">
+                  <input type="radio" name="filter" value="week" class="radio"
+                    {{ (isset($filter) && $filter === 'week') ? 'checked' : '' }} onchange="this.form.submit()">
+                  <span class="label-text">Minggu Ini</span>
+                </label>
+                <label class="cursor-pointer flex items-center gap-2 w-full px-2 py-1">
+                  <input type="radio" name="filter" value="month" class="radio"
+                    {{ !isset($filter) || $filter === 'month' ? 'checked' : '' }} onchange="this.form.submit()">
+                  <span class="label-text">Bulan Ini</span>
+                </label>
+                <label class="cursor-pointer flex items-center gap-2 w-full px-2 py-1">
+                  <input type="radio" name="filter" value="year" class="radio"
+                    {{ (isset($filter) && $filter === 'year') ? 'checked' : '' }} onchange="this.form.submit()">
+                  <span class="label-text">Tahun Ini</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </form>
 
+        {{-- Regular Popular Posts Grid --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           @if ($blogs->currentPage() == 1)
             @foreach ($blogs->skip(3) as $blog)
@@ -310,4 +362,33 @@
 @endsection
 
 @section('document.end')
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('filterPopulerForm');
+    const allRadio = document.getElementById('category-all');
+    const categoryCheckboxes = Array.from(document.querySelectorAll('.category-item'));
+
+    // Jika "Semua" di-check, uncheck semua kategori
+    if (allRadio) {
+      allRadio.addEventListener('change', function() {
+        if (this.checked) {
+          categoryCheckboxes.forEach(cb => cb.checked = false);
+        }
+        form.submit();
+      });
+    }
+
+    // Jika salah satu kategori di-check, uncheck "Semua"
+    categoryCheckboxes.forEach(cb => {
+      cb.addEventListener('change', function() {
+        if (categoryCheckboxes.some(c => c.checked)) {
+          if (allRadio) allRadio.checked = false;
+        } else {
+          if (allRadio) allRadio.checked = true;
+        }
+        form.submit();
+      });
+    });
+  });
+</script>
 @endsection
