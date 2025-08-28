@@ -2,7 +2,7 @@
 
 @section('document.body')
 <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-base-200 via-primary/10 to-base-100">
-  <div class="w-full max-w-3xl flex flex-col md:flex-row shadow-xl overflow-hidden bg-base-100/80">
+  <div class="w-full max-w-md md:max-w-3xl flex flex-col md:flex-row shadow-xl overflow-hidden bg-base-100/80 mx-4 lg:mx-0">
     {{-- Left: Pure Image --}}
     <div class="hidden md:flex md:w-1/2 relative bg-primary/10 p-0">
       <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80"
@@ -11,7 +11,7 @@
     </div>
     {{-- Right: Form --}}
     <div class="w-full md:w-1/2 flex items-center justify-center p-8">
-      <div class="w-full max-w-sm">
+      <div class="w-full">
         <h1 class="text-2xl font-bold text-base-content mb-1">Daftar</h1>
         <p class="text-base-content/60 text-xs mb-6">Buat akun baru untuk mulai menulis</p>
         <div class="card bg-base-100/80 shadow-none p-0 border-0">

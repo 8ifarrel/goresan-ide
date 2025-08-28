@@ -81,7 +81,7 @@ class AuthGuestController extends Controller
 
     Auth::login($user);
 
-    return redirect()->route('guest.beranda.index');
+    return redirect()->route('guest.login');
   }
 
   public function logout(Request $request)

@@ -2,7 +2,7 @@
 
 @section('document.body')
 <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-base-200 via-primary/10 to-base-100">
-  <div class="w-full max-w-md md:max-w-3xl flex flex-col md:flex-row shadow-xl overflow-hidden bg-base-100/80 mx-4 md:mx-0">
+  <div class="w-full max-w-md md:max-w-3xl flex flex-col md:flex-row shadow-xl overflow-hidden bg-base-100/80 mx-4 lg:mx-0">
     {{-- Left: Pure Image --}}
     <div class="hidden md:flex md:w-1/2 relative bg-primary/10 p-0">
       <img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=600&q=80"

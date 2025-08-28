@@ -41,15 +41,17 @@ Route:: as('guest.')->group(function () {
   });
 
   // Auth routes
-  Route::get('/login', [AuthGuestController::class, 'showLogin'])->name('login');
-  Route::post('/login/kirim', [AuthGuestController::class, 'login']);
-  Route::get('/register', [AuthGuestController::class, 'showRegister'])->name('register');
-  Route::post('/register/kirim', [AuthGuestController::class, 'register']);
-  Route::post('/logout', [AuthGuestController::class, 'logout'])->name('logout');
+  Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthGuestController::class, 'showLogin'])->name('login');
+    Route::post('/login/kirim', [AuthGuestController::class, 'login']);
+    Route::get('/register', [AuthGuestController::class, 'showRegister'])->name('register');
+    Route::post('/register/kirim', [AuthGuestController::class, 'register']);
+  });
 
   Route::middleware('auth')->group(function () {
     Route::get('/profil', [ProfilGuestController::class, 'edit'])->name('profil.edit');
     Route::post('/profil', [ProfilGuestController::class, 'update'])->name('profil.update');
+    Route::post('/logout', [AuthGuestController::class, 'logout'])->name('logout');
   });
 });
 
