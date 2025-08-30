@@ -241,7 +241,7 @@
         {{-- Regular Popular Posts Grid --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           @if ($blogs->currentPage() == 1)
-            @foreach ($blogs->skip(3) as $blog)
+            @foreach ($blogs as $blog)
               <div class="card bg-base-100 shadow-hover transition-shadow duration-300 ">
                 <figure>
                   <img src="{{ asset('storage/' . ($blog->primaryImage->image ?? '')) }}" alt="Article"

@@ -22,6 +22,44 @@
 </head>
 
 <body>
+  {{-- Alerts untuk auth (status / error / validation) --}}
+  @if(session('status'))
+    <div class="fixed top-4 right-4 z-50">
+      <div class="alert alert-success shadow-lg">
+        <div>
+          <span>{{ session('status') }}</span>
+        </div>
+      </div>
+    </div>
+  @endif
+
+  @if(session('error'))
+    <div class="fixed top-4 right-4 z-50">
+      <div class="alert alert-error shadow-lg">
+        <div>
+          <span>{{ session('error') }}</span>
+        </div>
+      </div>
+    </div>
+  @endif
+
+  @if ($errors->any())
+    <div class="fixed top-4 right-4 z-50 max-w-sm">
+      <div class="alert alert-error shadow-lg">
+        <div>
+          <div>
+            <strong class="font-bold">Terjadi kesalahan</strong>
+            <ul class="mt-2 list-disc pl-5 text-sm">
+              @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+              @endforeach
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  @endif
+
   @yield('document.body')
 
   @yield('document.end')

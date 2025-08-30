@@ -42,7 +42,8 @@ class AuthGuestController extends Controller
 
     if (Auth::attempt($credentials, $remember)) {
       $request->session()->regenerate();
-      return redirect()->intended(route('guest.beranda.index'));
+      return redirect()->intended(route('guest.beranda.index'))
+        ->with('success', 'Berhasil masuk. Selamat datang!');
     }
 
     throw ValidationException::withMessages([
@@ -81,7 +82,8 @@ class AuthGuestController extends Controller
 
     Auth::login($user);
 
-    return redirect()->route('guest.login');
+    return redirect()->route('guest.beranda.index')
+      ->with('success', 'Akun berhasil dibuat. Selamat datang!');
   }
 
   public function logout(Request $request)
@@ -89,6 +91,7 @@ class AuthGuestController extends Controller
     Auth::logout();
     $request->session()->invalidate();
     $request->session()->regenerateToken();
-    return redirect()->route('guest.beranda.index');
+    return redirect()->route('guest.beranda.index')
+      ->with('status', 'Anda telah berhasil keluar.');
   }
 }

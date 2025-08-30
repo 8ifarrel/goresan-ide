@@ -43,9 +43,9 @@ Route:: as('guest.')->group(function () {
   // Auth routes
   Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthGuestController::class, 'showLogin'])->name('login');
-    Route::post('/login/kirim', [AuthGuestController::class, 'login']);
+    Route::post('/login', [AuthGuestController::class, 'login']);
     Route::get('/register', [AuthGuestController::class, 'showRegister'])->name('register');
-    Route::post('/register/kirim', [AuthGuestController::class, 'register']);
+    Route::post('/register', [AuthGuestController::class, 'register']);
   });
 
   Route::middleware('auth')->group(function () {
